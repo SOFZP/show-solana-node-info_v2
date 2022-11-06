@@ -53,8 +53,11 @@ and you can read data of **any node** in solana blockchain:
 
 where
 `<NODE_PUBKEY>` - pubkey of any node, 
+
 `<CLUSTER>` - `-ut` or `-ud` or `-um` or `-ul` for cluster, 
-`<TRUE_FOR_SHORT>` - `true` if you want short return and `false` / nothing if you wnt full return
+
+`<TRUE_FOR_SHORT>` - `true` if you want short return and `false` / nothing if you want full return
+
 
 ## Known issues:
 1. **RPC issues**. If PRC is slow or un unavailable than you can see errors. Working to rotate RPC if so.
