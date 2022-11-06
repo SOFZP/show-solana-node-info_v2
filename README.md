@@ -53,7 +53,7 @@ and you can read data of **any node** in solana blockchain:
 
 where
 `<NODE_PUBKEY>` - pubkey of any node, 
-`<CLUSTER_ABBREVIATED>` - `-ut` or `-ud` or `-um` or `-ul` for cluster, 
+`<CLUSTER>` - `-ut` or `-ud` or `-um` or `-ul` for cluster, 
 `<TRUE_FOR_SHORT>` - `true` if you want short return and `false` / nothing if you wnt full return
 
 ## Known issues:
