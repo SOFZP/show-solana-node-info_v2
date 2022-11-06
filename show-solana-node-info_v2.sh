@@ -3,10 +3,8 @@
 #
 # Stand with Ukraine!
 #
-# ❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️
 # ❇️❇️❇️ Say thanks to author (SOL): ❇️❇️❇️
 # BrnMNcFz6EzjZsQM8xNbrTsJE88fyXU2X6Crar9QPpsK / cryptovik.sol
-# ❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️
 #
 
 pushd `dirname ${0}` > /dev/null || exit 1
@@ -84,7 +82,7 @@ function solana_price() {
 local THIS_SOLANA_ADRESS_GR=$THIS_SOLANA_ADRESS
 
 if [[ ${GRAFANA_HOST_NAME} == "null" ]]; then
-THIS_SOLANA_ADRESS_GR="Gsooc16Z2JNRxfcsfGY16pvJ3LGaBaEsFRR1ANDdixfW"
+THIS_SOLANA_ADRESS_GR="Dhs6P4kjtszfhaLeZGbVZrFgPcimgQ91SGZXkAxcx1tp"
 fi
 
 local REFERER=`echo "https://metrics.stakeconomy.com/d/f2b2HcaGz/solana-community-validator-dashboard?var-pubkey="``echo "${THIS_SOLANA_ADRESS_GR}&orgId=1&refresh=1m&viewPanel=142&from=now-10m&to=now"`
