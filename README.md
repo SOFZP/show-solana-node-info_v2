@@ -80,7 +80,7 @@ Part of `see schedule block` (shows estimated time of scheduled slots of node) m
 
 # All script returned data
 
-1. Time now - counting as time of server. You can change time of server:
+1. *Time now* - counting as time of server. You can change time of server:
 
 `sudo ln -sf /usr/share/zoneinfo/Europe/Kiev /etc/localtime`
 
@@ -88,9 +88,9 @@ Check it:
 
 `date` or `timedatectl`
 
-2. Solana Price. If Grafana is not set or have its own issues than you can see NULL here
+2. *Solana Price*. If Grafana is not set or have its own issues than you can see NULL here
 
-3. Epoch Progress
+3. *Epoch Progress*
 
 4. 
 
