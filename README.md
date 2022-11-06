@@ -94,5 +94,14 @@ Check it:
 
 4. 
 
+5.
+
+6.
+
+7.
+
+.
+
+.
 
 ❇️ Say thanks to author (SOL): BrnMNcFz6EzjZsQM8xNbrTsJE88fyXU2X6Crar9QPpsK / cryptovik.sol
