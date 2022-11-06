@@ -7,13 +7,13 @@
  
  
 ## TL;DR
-Script uses On-chain solana data, API of solana.org, API of Grafana
+Script uses **on-chain solana data, API of solana.org, API of Grafana**
 
-You can see data of ANY solana validator node
+You can see data of **ANY solana validator node**
 
 This is the tool for monitoring multiple nodes with cli
 
-Tool has two modes: full and short
+Tool has two modes: **full and short**
 
 If node don't have standart Grafana (telegraf) installed than you cannot see hardware info of it
  
@@ -23,7 +23,7 @@ If node don't have standart Grafana (telegraf) installed than you cannot see har
 1. Move file `show-solana-node-info_v2.sh` to the server or instance **with installed solana**
 
 
-2. Install rust, solana-foundation-delegation-program-cli and jq:
+2. Install **rust, solana-foundation-delegation-program-cli and jq**:
 
 `apt-get update && curl https://sh.rustup.rs/ -sSf | sh`
 
@@ -40,10 +40,10 @@ enter y + Enter
 `sudo apt  install jq  # version 1.6-1ubuntu0.20.04.1`
  
  
-3. `chmod u+x ./show-solana-node-info_v2.sh`
+3. Give permissions to the script: `chmod u+x ./show-solana-node-info_v2.sh`
  
  
-4. `./show-solana-node-info_v2.sh` - if you run this script on your node
+4. Run it on your node without parameters: `./show-solana-node-info_v2.sh`
 
 
 ### You can use script on any instance with installed solana,
