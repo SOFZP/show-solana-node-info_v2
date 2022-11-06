@@ -1,4 +1,4 @@
-# Cryptovik Monitoring Script / show-solana-node-info_v2.sh
+# Cryptovik Monitoring Script
 ### 💛💙 Stand with Ukraine! 💙💛
 ❇️ Say thanks to author (SOL): BrnMNcFz6EzjZsQM8xNbrTsJE88fyXU2X6Crar9QPpsK / cryptovik.sol
   
@@ -67,6 +67,7 @@ Part of `see schedule block` (shows estimated time of scheduled slots of node) m
  
   
 ## Example
+### My TDS node FULL return
 ![My TDS node FULL return](/example1.png "My TDS node FULL return")
-
+### My MB node SHORT return
 ![My MB node SHORT return](/example2.png "My MB node SHORT return")
