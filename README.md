@@ -11,7 +11,7 @@ Script uses On-chain solana data, API of solana.org, API of Grafana
 
 You can see data of ANY solana validator node
 
-It's the tool for monitoring multiple nodes with cli
+This is the tool for monitoring multiple nodes with cli
 
 Tool has two modes: full and short
 
