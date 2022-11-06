@@ -16,6 +16,8 @@ This is the tool for monitoring multiple nodes with cli
 Tool has two modes: **full and short**
 
 If node don't have standart Grafana (telegraf) installed than you cannot see hardware info of it
+
+All returned parameters are decribed in the end of this readme
  
  
 ## How to use show-solana-node-info_v2.sh:
@@ -69,8 +71,28 @@ where
 Part of `see schedule block` (shows estimated time of scheduled slots of node) modified from https://github.com/Vahhhh/solana/blob/main/see-schedule.sh - BIG THANKS!!!
  
   
-## Example
-### My TDS node FULL return
+## Examples
+### My TDS node FULL return (Testnet cluster restart was active at that moment)
 ![My TDS node FULL return](/example1.png "My TDS node FULL return")
 ### My MB node SHORT return
 ![My MB node SHORT return](/example2.png "My MB node SHORT return")
+
+
+# All script returned data
+
+1. Time now - counting as time of server. You can change time of server:
+
+`sudo ln -sf /usr/share/zoneinfo/Europe/Kiev /etc/localtime`
+
+Check it:
+
+`date` or `timedatectl`
+
+2. Solana Price. If Grafana is not set or have its own issues than you can see NULL here
+
+3. Epoch Progress
+
+4. 
+
+
+❇️ Say thanks to author (SOL): BrnMNcFz6EzjZsQM8xNbrTsJE88fyXU2X6Crar9QPpsK / cryptovik.sol
