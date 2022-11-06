@@ -1,6 +1,6 @@
 # Cryptovik Monitoring Script
-### 💛💙 Stand with Ukraine! 💙💛
-❇️ Say thanks to author (SOL): BrnMNcFz6EzjZsQM8xNbrTsJE88fyXU2X6Crar9QPpsK / cryptovik.sol
+#### 💛💙 Stand with Ukraine! 💙💛
+##### ❇️ Say thanks to author (SOL): BrnMNcFz6EzjZsQM8xNbrTsJE88fyXU2X6Crar9QPpsK / cryptovik.sol
   
  
 ### This is complex CLI script for solana node monitoring
