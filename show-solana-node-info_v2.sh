@@ -970,7 +970,10 @@ function Skiprate_7 () {
 	
 
 
-	CLUSTER_SKIP=`echo -e "$(solana validators ${SOLANA_CLUSTER} --output json-compact | jq .averageSkipRate)" | awk '{printf("%.2f\n",$1)}'`
+	CLUSTER_SKIP=`echo -e "$(solana validators ${SOLANA_CLUSTER} --output json-compact | jq .averageStakeWeightedSkipRate)" | awk '{printf("%.2f\n",$1)}'`
+	
+	CLUSTER_SKIP_AVERAGE=`echo -e "$(solana validators ${SOLANA_CLUSTER} --output json-compact | jq .averageSkipRate)" | awk '{printf("%.2f\n",$1)}'`
+	
 	
 	THIS_BLOCK_PRODUCTION=`solana ${SOLANA_CLUSTER} -v block-production | grep ${THIS_SOLANA_ADRESS}`
 
@@ -1002,7 +1005,7 @@ function Skiprate_7 () {
 	echo -e "${CYAN}"
 	echo -e "Skip Rate ${NOCOLOR}"
 
-	echo -e "Average cluster skiprate: ${CLUSTER_SKIP}% (plus grace 30%: $(bc<<<"scale=2;${CLUSTER_SKIP:-0}+30")%)"
+	echo -e "Average cluster skiprate: ${CLUSTER_SKIP}% (plus grace 30%: $(bc<<<"scale=2;${CLUSTER_SKIP:-0}+30")%) | AVG ${CLUSTER_SKIP_AVERAGE}%"
 
 	if (( $(bc<<<"scale=2;${YOUR_SKIPRATE:-0} > ${CLUSTER_SKIP:-0}+30"))); then
 	  echo -e "${RED}Your skiprate: ${YOUR_SKIPRATE:-0}% (Bad) - Done: ${NON_SKIPPED_COUNT:-0}, Skipped: ${SKIPPED_COUNT:-0}${NOCOLOR}"
@@ -1176,7 +1179,10 @@ OPTIMISTIC_ARR[3]=`Optimistic_Slot_Now 5`
 	
 OPTIMISTIC_ARR[4]=`Optimistic_Slot_Now`
 	
-	CLUSTER_SKIP=`echo -e "$(solana validators ${SOLANA_CLUSTER} --output json-compact | jq .averageSkipRate)" | awk '{printf("%.2f\n",$1)}'`
+	CLUSTER_SKIP=`echo -e "$(solana validators ${SOLANA_CLUSTER} --output json-compact | jq .averageStakeWeightedSkipRate)" | awk '{printf("%.2f\n",$1)}'`
+	
+	CLUSTER_SKIP_AVERAGE=`echo -e "$(solana validators ${SOLANA_CLUSTER} --output json-compact | jq .averageSkipRate)" | awk '{printf("%.2f\n",$1)}'`
+	
 	
 	THIS_BLOCK_PRODUCTION=`solana ${SOLANA_CLUSTER} -v block-production | grep ${THIS_SOLANA_ADRESS}`
 
@@ -1211,10 +1217,10 @@ OPTIMISTIC_ARR[4]=`Optimistic_Slot_Now`
 			echo -e "${YELLOW}"
 		fi`
 		
-		SHORT_SKIP_INFO=`echo "${MIN_POS_SKIP} | ${MAX_POS_SKIP} | ${COLOR_REMAINING_SLOTS}${REMAINING_SLOTS1:-0} remaining${NOCOLOR}"`
+		SHORT_SKIP_INFO=`echo "${MIN_POS_SKIP} | ${MAX_POS_SKIP} | cluster ${CLUSTER_SKIP}%->$(bc<<<"scale=2;${CLUSTER_SKIP:-0}+30")% grace | ${COLOR_REMAINING_SLOTS}${REMAINING_SLOTS1:-0} remaining${NOCOLOR}"`
 
 	else
-		SHORT_SKIP_INFO=`echo -e "${LIGHTPURPLE}This node don't have blocks in this epoch${NOCOLOR}"`
+		SHORT_SKIP_INFO=`echo -e "${LIGHTPURPLE}This node don't have blocks in this epoch${NOCOLOR} | cluster ${CLUSTER_SKIP}%-> $(bc<<<"scale=2;${CLUSTER_SKIP:-0}+30")% grace"`
 	fi
 	
 	
