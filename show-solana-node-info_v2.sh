@@ -1,5 +1,8 @@
 #!/bin/bash
-# Cryptovik Monitoring Script
+# Solana Nodes CLI Monitoring Script
+# 
+# Documentation & actual releases are here:
+# https://github.com/SOFZP/show-solana-node-info_v2
 #
 # Stand with Ukraine!
 #
