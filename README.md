@@ -62,7 +62,7 @@ where
 
 
 ## Known issues:
-1. **RPC issues**. If PRC is slow or un unavailable than you can see errors. Working to rotate RPC if so.
+1. **RPC issues**. If PRC is slow or unavailable than you can see RPC errors. Working now to rotate RPC if so happens.
 2. **If --no-voting is set**, than you cannot see node info here.
 3. **If pubkey doesn't belongs to node**, there will be some errors.
  
