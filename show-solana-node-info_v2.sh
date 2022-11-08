@@ -87,8 +87,7 @@ fi
 
 local REFERER=`echo "https://metrics.stakeconomy.com/d/f2b2HcaGz/solana-community-validator-dashboard?var-pubkey="``echo "${THIS_SOLANA_ADRESS_GR}&orgId=1&refresh=1m&viewPanel=142&from=now-10m&to=now"`
 
-
-echo -e "${PURPLE}"`curl -g -s 'https://metrics.stakeconomy.com/api/ds/query' \
+PRICE=`curl -g -s 'https://metrics.stakeconomy.com/api/ds/query' \
   -H 'authority: metrics.stakeconomy.com' \
   -H 'accept: application/json, text/plain, */*' \
   -H 'accept-language: en-US,en;q=0.9,uk;q=0.8,ru;q=0.7' \
@@ -104,7 +103,13 @@ echo -e "${PURPLE}"`curl -g -s 'https://metrics.stakeconomy.com/api/ds/query' \
   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36' \
   -H 'x-grafana-org-id: 1' \
   --data-raw '{"queries":[{"datasource":{"uid":"PBFA97CFB590B2093","type":"prometheus"},"editorMode":"code","expr":"nodemonitor_solanaPrice{pubkey=\"'$THIS_SOLANA_ADRESS_GR'\"}[1m]","legendFormat":"__auto","range":true,"refId":"A","queryType":"timeSeriesQuery","exemplar":false,"requestId":"142A","utcOffsetSec":0,"interval":"","datasourceId":1,"intervalMs":15000,"maxDataPoints":1057}],"range":{"from":"now-10m","to":"now","raw":{"from":"now-10m","to":"now"}},"from":"now-10m","to":"now"}' \
-  --compressed | jq -r @json 2> /dev/null | jq -r '.results.A.frames[0].data.values[1][-1]'  2> /dev/null`"$ ${NOCOLOR}"
+  --compressed | jq -r @json 2> /dev/null | jq -r '.results.A.frames[0].data.values[1][-1]'  2> /dev/null`
+
+#if [[ $PRICE!="null" ]]; then
+	echo -e "${PURPLE}${PRICE:-Cannot see price now}$ ${NOCOLOR}"
+#else
+#	echo ""
+#fi
 
 }
 
@@ -1220,7 +1225,7 @@ OPTIMISTIC_ARR[4]=`Optimistic_Slot_Now`
 		SHORT_SKIP_INFO=`echo "${MIN_POS_SKIP} | ${MAX_POS_SKIP} | cluster ${CLUSTER_SKIP}%->$(bc<<<"scale=2;${CLUSTER_SKIP:-0}+30")% grace | ${COLOR_REMAINING_SLOTS}${REMAINING_SLOTS1:-0} remaining${NOCOLOR}"`
 
 	else
-		SHORT_SKIP_INFO=`echo -e "${LIGHTPURPLE}This node don't have blocks in this epoch${NOCOLOR} | cluster ${CLUSTER_SKIP}%-> $(bc<<<"scale=2;${CLUSTER_SKIP:-0}+30")% grace"`
+		SHORT_SKIP_INFO=`echo -e "${LIGHTPURPLE}This node don't have blocks in this epoch${NOCOLOR} | cluster ${CLUSTER_SKIP}%->$(bc<<<"scale=2;${CLUSTER_SKIP:-0}+30")% grace"`
 	fi
 	
 	
