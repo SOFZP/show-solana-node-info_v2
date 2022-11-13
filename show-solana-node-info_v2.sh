@@ -596,7 +596,7 @@ do
 	fi
 	iterator=$iterator+1
 	#echo $iterator
-	if (( $(bc<<<"scale=0;${iterator:-0} >= 5") )); then
+	if (( $(bc<<<"scale=0;${iterator:-0} >= 10") )); then
 		DONE_STOP=1
 	fi
 	#echo $LAST_EPOCH
