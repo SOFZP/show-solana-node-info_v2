@@ -769,7 +769,7 @@ function Node_Stake_4 () {
 	SECRET_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "EhYXq3ANp5nAerUpbSgd7VK2RRcxK1zNuSQ755G5Mtxx" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | sed 's/ //g' | awk '{n += $1}; END{print n}' | bc`
 	SECRET_ACTIVE_STAKE_CLR=`echo -e "${SECRET_ACTIVE_STAKE:-0}" | awk '{if(NR=0) print 0; else print'} | awk '{ if (($1 > 0)) print gr$1" SOL"nc; else print rd$1" SOL"nc; fi }' gr=$GREEN rd=$RED nc=$NOCOLOR`
 	SECRET_ACTIVE_STAKE_COUNT=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "EhYXq3ANp5nAerUpbSgd7VK2RRcxK1zNuSQ755G5Mtxx" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | grep '' -c`
-	SECRET_ACTIVE_TEXT=`echo -e "| Unknown Fund(${SECRET_ACTIVE_STAKE_COUNT:-0}) ${SECRET_ACTIVE_STAKE_CLR} "`
+	SECRET_ACTIVE_TEXT=`echo -e "| Un-known Fund(${SECRET_ACTIVE_STAKE_COUNT:-0}) ${SECRET_ACTIVE_STAKE_CLR} "`
 	if [[ "${MINIMUM_SECRET_STAKE:-0}" == "0" ]]; then
 		SECRET_ACTIVE_TEXT=""
 	fi
