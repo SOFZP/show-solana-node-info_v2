@@ -51,7 +51,7 @@ enter y + Enter
 ### You can use script on any instance with installed solana,
 and you can read data of **any node** in solana blockchain:
 
-`./show-solana-node-info.sh <NODE_PUBKEY> <CLUSTER> <TRUE_FOR_SHORT>`
+`./show-solana-node-info_v2.sh <NODE_PUBKEY> <CLUSTER> <TRUE_FOR_SHORT>`
 
 where
 `<NODE_PUBKEY>` - pubkey of any node, 
