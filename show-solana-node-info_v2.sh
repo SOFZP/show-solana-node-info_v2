@@ -1300,7 +1300,9 @@ OPTIMISTIC_ARR[4]=`Optimistic_Slot_Now`
 			fi`
 	METRICS_SUMMARY=`echo "${COLOR_METRICS}"``echo "${METRICS_SUMMARY_RAW}"``echo "${NOCOLOR}"`
 	
-	echo -e "Metrics: ${METRICS_SUMMARY}"
+	if [[ "${METRICS_SUMMARY}" != "null" ]] ; then
+		echo -e "Metrics: ${METRICS_SUMMARY}"
+	fi
 
 	
 OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now 5`
@@ -1344,8 +1346,13 @@ OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now 5`
 		  echo "${RED}"
 		fi`
 	CURRENT_STAKE_ACTION=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.state_action'`
-	echo -e "Last Epoch State: ${COLOR_STAKE_STATE}${CURRENT_STAKE_STATE}: ${CURRENT_STAKE_REASON}${NOCOLOR}"
-	echo -e "Last Bot Stake Action: In epoch ${LAST_EPOCH} ${CURRENT_STAKE_ACTION}${NOCOLOR}"
+	
+	if [[ "${CURRENT_STAKE_STATE}" != "null" ]] ; then
+		echo -e "Last Epoch State: ${COLOR_STAKE_STATE}${CURRENT_STAKE_STATE}: ${CURRENT_STAKE_REASON}${NOCOLOR}"
+	fi
+	if [[ "${CURRENT_STAKE_ACTION}" != "null" ]] ; then
+		echo -e "Last Bot Stake Action: In epoch ${LAST_EPOCH} ${CURRENT_STAKE_ACTION}${NOCOLOR}"
+	fi
 	
 	Node_Stake_4 | grep -A2 "Stake Total: Active"
 	
@@ -1366,7 +1373,9 @@ OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now 5`
 	
 	CURRENT_DC=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.epoch_data_center.asn'`'-'`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.epoch_data_center.location'`' | '`echo "${DC_COLOR}${CONCENTRATION}"`'%'`echo "${NOCOLOR}"`' concentration'
 	
-	echo -e "Datacenter: ${CURRENT_DC}"
+	if [[ "$(echo "${KYC_API_VERCEL_2}" | jq -r '.stats.epoch_data_center.asn')" != "null" ]] ; then
+		echo -e "Datacenter: ${CURRENT_DC}"
+	fi
 }
 
 
