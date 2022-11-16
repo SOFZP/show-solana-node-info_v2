@@ -1,7 +1,7 @@
 # Solana Nodes CLI Monitoring Script
 #### 💛💙 Stand with Ukraine! 💙💛
 ##### ❇️ Say thanks to author (SOL): BrnMNcFz6EzjZsQM8xNbrTsJE88fyXU2X6Crar9QPpsK / cryptovik.sol
-##### ❇️ Or stake your SOL to my node: https://cryptovik.info/
+##### ❇️ Or stake your SOL to my node: Gcu91CL5vrjeQfKabtmwe8cxP6bceK3TMndR3Rsse8de (https://cryptovik.info/)
   
  
 ### This is complex CLI script for solana nodes monitoring
@@ -106,4 +106,4 @@ Check it:
 .
 
 ❇️ Say thanks to author (SOL): BrnMNcFz6EzjZsQM8xNbrTsJE88fyXU2X6Crar9QPpsK / cryptovik.sol
-❇️ Or stake your SOL to my node: https://cryptovik.info/
+❇️ Or stake your SOL to my node: Gcu91CL5vrjeQfKabtmwe8cxP6bceK3TMndR3Rsse8de (https://cryptovik.info/)
