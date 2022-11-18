@@ -63,6 +63,7 @@ where
 
 ## Known issues:
 1. **RPC issues**. If PRC is slow or unavailable than you can see RPC errors. Working now to rotate RPC if so happens.
+![RPC error example](/example3.png "RPC error example")
 2. **If --no-voting is set**, than you cannot see node info here.
 3. **If pubkey doesn't belongs to node**, there will be some errors.
  
