@@ -47,14 +47,16 @@ function getRandomRPC () {
 function rotateKnownRPC () {
 
 	local testRPC1=' -ut '
-	local testRPC2='--url https://testnet.rpcpool.com/'
-	local testRPC3='--url http://testnet.solana.margus.one/'
-	local testRPC4='--url https://entrypoint.testnet.solana.sergo.dev'
+	local testRPC2=' -ut '
+	local testRPC3='--url https://testnet.rpcpool.com/'
+	local testRPC4='--url http://testnet.solana.margus.one/'
+	local testRPC5='--url https://entrypoint.testnet.solana.sergo.dev'
 	
 	local mainRPC1=' -um '
-	local mainRPC2='--url https://ssc-dao.genesysgo.net/'
-	local mainRPC3='--url https://solana-mainnet-rpc.allthatnode.com/'
-	local mainRPC4='--url https://mainnet.rpcpool.com/'
+	local mainRPC2='--url https://rpc.ankr.com/solana'
+	local mainRPC3='--url https://ssc-dao.genesysgo.net/'
+	local mainRPC4='--url https://solana-mainnet-rpc.allthatnode.com/'
+	local mainRPC5='--url https://mainnet.rpcpool.com/'
 	
 	local fcl="$1"
 
@@ -735,7 +737,7 @@ function This_Node_3 () {
 function Node_Stake_4 () {
 
 	if [[ "${CLUSTER_NAME}" == "(Mainnet)" ]]; then
-		SOLANA_CLUSTER_local=' -um ' #' --url https://mainnet.rpcpool.com/ '
+		SOLANA_CLUSTER_local=' --url https://rpc.ankr.com/solana ' #' -um ' #' --url https://mainnet.rpcpool.com/ '
 	elif [[ "${CLUSTER_NAME}" == "(TESTNET)" ]]; then
 		SOLANA_CLUSTER_local=' -ut '
 	else
@@ -1385,7 +1387,7 @@ if [[ "${FLAG_ONLY_IMPORTANT}" == "false" ]]; then
 echo -e "${GREEN}Solana Price: ${NOCOLOR}"`solana_price`
 
 	Epoch_Progress_2
-	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
+SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 OPTIMISTIC_ARR[5]=`Optimistic_Slot_Now`
 	This_Node_3
@@ -1414,7 +1416,7 @@ OPTIMISTIC_ARR[8]=`Optimistic_Slot_Now`
 	
 	Time_Now_1
 	
-	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
+SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 	
 	Only_Important
