@@ -1387,7 +1387,7 @@ if [[ "${FLAG_ONLY_IMPORTANT}" == "false" ]]; then
 echo -e "${GREEN}Solana Price: ${NOCOLOR}"`solana_price`
 
 	Epoch_Progress_2
-SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
+	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 OPTIMISTIC_ARR[5]=`Optimistic_Slot_Now`
 	This_Node_3
@@ -1416,7 +1416,7 @@ OPTIMISTIC_ARR[8]=`Optimistic_Slot_Now`
 	
 	Time_Now_1
 	
-SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
+	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 	
 	Only_Important
