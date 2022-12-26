@@ -84,34 +84,12 @@ function rotateKnownRPC () {
 
 function solana_price() {
 
-local THIS_SOLANA_ADRESS_GR=$THIS_SOLANA_ADRESS
+PRICE=`curl -g -s 'https://data.gateapi.io/api2/1/ticker/sol_usdt' --compressed | jq -r @json 2> /dev/null | jq -r '.last' | awk '{printf("%.2f\n",$1)}'  2> /dev/null`
 
-if [[ ${GRAFANA_HOST_NAME} == "null" ]]; then
-THIS_SOLANA_ADRESS_GR="Dhs6P4kjtszfhaLeZGbVZrFgPcimgQ91SGZXkAxcx1tp"
-fi
-
-local REFERER=`echo "https://metrics.stakeconomy.com/d/f2b2HcaGz/solana-community-validator-dashboard?var-pubkey="``echo "${THIS_SOLANA_ADRESS_GR}&orgId=1&refresh=1m&viewPanel=142&from=now-10m&to=now"`
-
-PRICE=`curl -g -s 'https://metrics.stakeconomy.com/api/ds/query' \
-  -H 'authority: metrics.stakeconomy.com' \
-  -H 'accept: application/json, text/plain, */*' \
-  -H 'accept-language: en-US,en;q=0.9,uk;q=0.8,ru;q=0.7' \
-  -H 'content-type: application/json' \
-  -H 'origin: https://metrics.stakeconomy.com' \
-  -H 'referer: '${REFERER}'' \
-  -H 'sec-ch-ua: "Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"' \
-  -H 'sec-ch-ua-mobile: ?0' \
-  -H 'sec-ch-ua-platform: "Windows"' \
-  -H 'sec-fetch-dest: empty' \
-  -H 'sec-fetch-mode: cors' \
-  -H 'sec-fetch-site: same-origin' \
-  -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36' \
-  -H 'x-grafana-org-id: 1' \
-  --data-raw '{"queries":[{"datasource":{"uid":"PBFA97CFB590B2093","type":"prometheus"},"editorMode":"code","expr":"nodemonitor_solanaPrice{pubkey=\"'$THIS_SOLANA_ADRESS_GR'\"}[1m]","legendFormat":"__auto","range":true,"refId":"A","queryType":"timeSeriesQuery","exemplar":false,"requestId":"142A","utcOffsetSec":0,"interval":"","datasourceId":1,"intervalMs":15000,"maxDataPoints":1057}],"range":{"from":"now-10m","to":"now","raw":{"from":"now-10m","to":"now"}},"from":"now-10m","to":"now"}' \
-  --compressed | jq -r @json 2> /dev/null | jq -r '.results.A.frames[0].data.values[1][-1]'  2> /dev/null`
+PERCENT=`curl -g -s 'https://data.gateapi.io/api2/1/ticker/sol_usdt' --compressed | jq -r @json 2> /dev/null | jq -r '.percentChange' | awk '{printf("%.2f\n",$1)}'  2> /dev/null`
 
 #if [[ $PRICE!="null" ]]; then
-	echo -e "${PURPLE}${PRICE:-Cannot see price now}$ ${NOCOLOR}"
+	echo -e "${PURPLE}${PRICE:-Cannot see price now}$ | ${PERCENT:-}% ${NOCOLOR}"
 #else
 #	echo ""
 #fi
@@ -265,7 +243,7 @@ function Optimistic_Slot_Now() {
 	
 	#"Optimistic Slot: "
 	
-	echo -e ${OPTIMISTIC_SLOT_RIGHT_NOW:-null}${NOCOLOR}${OPTIMISTIC_SLOT_DATE:-}${NOCOLOR}
+	echo -e ${OPTIMISTIC_SLOT_RIGHT_NOW:-null} #${OPTIMISTIC_SLOT_DATE:-""}
 }
 
 function Optimistic_Slot_Summary() {
@@ -287,11 +265,19 @@ function Optimistic_Slot_Summary() {
 		fi
 	done
 	
-	echo -e "${CYAN}"
-	echo -e "Metrics Sending Now ${NOCOLOR}"
-	echo -e "Optimistic Slot 1: ${GL_COLOR_OPT_SLOT}"`printf "%s\n" "${OPTIMISTIC_ARR[0]}"`"${NOCOLOR}"
-	echo -e "Optimistic Slot 2: ${GL_COLOR_OPT_SLOT}"`printf "%s\n" "${OPTIMISTIC_ARR[-1]}"`"${NOCOLOR}"
-	echo -e "${GL_TEXT_OPT_SLOT}" | awk 'length > 5'
+	
+	if [[ "${OPTIMISTIC_ARR[0]}" != "null" ]];
+	then
+		if [[ "${OPTIMISTIC_ARR[-1]}" != "null" ]];
+		then
+			echo -e "${CYAN}"
+			echo -e "Metrics Sending Now ${NOCOLOR}"
+			echo -e "Optimistic Slot 1: ${GL_COLOR_OPT_SLOT}"`printf "%s\n" "${OPTIMISTIC_ARR[0]}"`"${NOCOLOR}"
+			echo -e "Optimistic Slot 2: ${GL_COLOR_OPT_SLOT}"`printf "%s\n" "${OPTIMISTIC_ARR[-1]}"`"${NOCOLOR}"
+			echo -e "${GL_TEXT_OPT_SLOT}" | awk 'length > 5'
+		fi
+	fi
+	
 }
 
 
@@ -922,12 +908,16 @@ function SFDP_5 () {
 	fi
 	echo -e "${SFDP}"
 
-	if [[ "${TESTNET_PERFORMANCE}" != "" ]] ; then
+	if [[ "${TESTNET_PERFORMANCE}" != "null" ]] ; then
 		echo -e "Current Testnet Performance: ${COLOR_TESTNET_PERFORMANCE}${TESTNET_PERFORMANCE}/10 ${NOCOLOR}"
 	fi
 	echo -e "Last Epoch State: ${COLOR_STAKE_STATE}${CURRENT_STAKE_STATE}: ${CURRENT_STAKE_REASON}${NOCOLOR}"
+	
 	#echo -e "Metrics-Last-Epoch-${LAST_EPOCH}: ${METRICS_LAST_EPOCH}"
-	echo -e "Metrics: ${METRICS_SUMMARY}"
+	
+	if [[ "${METRICS_SUMMARY_RAW}" != "null" ]] ; then
+		echo -e "Metrics: ${METRICS_SUMMARY}"
+	fi
 }
 
 function Vote_Credits_6 () {
@@ -1282,7 +1272,7 @@ OPTIMISTIC_ARR[4]=`Optimistic_Slot_Now`
 		  echo "${RED}"
 		fi`
 		
-	if [[ "${TESTNET_PERFORMANCE}" != "" ]] ; then
+	if [[ "${TESTNET_PERFORMANCE}" != "null" ]] ; then
 		echo -e "Current Testnet Performance: ${COLOR_TESTNET_PERFORMANCE}${TESTNET_PERFORMANCE}/10 ${NOCOLOR}"
 	fi
 	
@@ -1302,7 +1292,7 @@ OPTIMISTIC_ARR[4]=`Optimistic_Slot_Now`
 			fi`
 	METRICS_SUMMARY=`echo "${COLOR_METRICS}"``echo "${METRICS_SUMMARY_RAW}"``echo "${NOCOLOR}"`
 	
-	if [[ "${METRICS_SUMMARY}" != "null" ]] ; then
+	if [[ "${METRICS_SUMMARY_RAW}" != "null" ]] ; then
 		echo -e "Metrics: ${METRICS_SUMMARY}"
 	fi
 
@@ -1326,7 +1316,14 @@ OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now 5`
 			fi
 		fi
 	done
-	echo -e "Optimistic Slots: ${GL_COLOR_OPT_SLOT}${first_elem}${NOCOLOR}-${GL_COLOR_OPT_SLOT}${last_elem}${NOCOLOR} | ${GL_TEXT_OPT_SLOT}"
+	
+	if [[ "${OPTIMISTIC_ARR[0]}" != "null" ]];
+	then
+		if [[ "${OPTIMISTIC_ARR[-1]}" != "null" ]];
+		then
+			echo -e "Optimistic Slots: ${GL_COLOR_OPT_SLOT}${first_elem}${NOCOLOR}-${GL_COLOR_OPT_SLOT}${last_elem}${NOCOLOR} | ${GL_TEXT_OPT_SLOT}"
+		fi
+	fi
 	
 	if [[ "${CLUSTER_NAME}" == "(Mainnet)" ]]; then
 		LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 ${YOUR_VOTE_ACCOUNT} 2>&1)
