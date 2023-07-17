@@ -1059,7 +1059,7 @@ function Last_Rewards_8 () {
 
 	LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 5 ${YOUR_VOTE_ACCOUNT} 2>&1)
 	
-	LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -A10 'Reward Slot' | sed 's/Reward Slot/Reward_Slot/g' | awk '{print $1"\t"$2"\t"$3}'`
+	LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -A10 'Reward Slot' | sed 's/Reward Slot/Reward_Slot/g' | awk '{print $1"\t"$3" "$4""$5"\t"$6}'`
 
 	#echo -ne '\n'
 	echo -e "${CYAN}"
@@ -1327,7 +1327,7 @@ OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now 5`
 	
 	if [[ "${CLUSTER_NAME}" == "(Mainnet)" ]]; then
 		LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 ${YOUR_VOTE_ACCOUNT} 2>&1)
-		LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -m1 -A1 "Reward Slot" | grep -v "Reward" | sed -n -e 1p | awk '{print "Epoch "$1" - "$3}'`
+		LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -m1 -A1 "Reward Slot" | grep -v "Reward" | sed -n -e 1p | awk '{print "Epoch "$1" - "$6}'`
 
 		echo -e "Last Reward: ${LAST_REWARDS:-${LIGHTPURPLE}Cannot see rewards now ${NOCOLOR}}"
 	fi
