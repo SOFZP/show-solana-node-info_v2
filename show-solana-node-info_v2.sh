@@ -30,6 +30,9 @@ LIGHTBLUE='\033[1;34m'
 LIGHTPURPLE='\033[1;35m'
 LIGHTCYAN='\033[1;36m'
 
+UNDERLINE='' #'\033[4m'
+
+
 _work_done=0
 
 SERVER_TIME_ZONE=`timedatectl | grep "Time zone" | sed 's/  */ /g' | sed 's/ Time zone://g'`
@@ -94,6 +97,27 @@ PERCENT=`curl -g -s 'https://data.gateapi.io/api2/1/ticker/sol_usdt' --compresse
 #	echo ""
 #fi
 
+}
+
+
+
+function check_key () {
+	local KEY_TO_CHECK=${1:-}
+	
+	local STAKE_NAMES=(SELF_STAKE FOUNDATION TDS_FOUNDATION SECRET_STAKE MARINADE MARINADE2 SOCEAN_POOL JPOOL_POOL EVERSOL_STAKE BLAZESTAKE LIDO_POOL DAOPOOL JITO_POOL LAINE_POOL UNKNOWN_POOL ?ALAMEDA2 ?ALAMEDA3 ?ALAMEDA4 ?ALAMEDA5 ?ALAMEDA6 ?ALAMEDA7 ?ALAMEDA8 ?ALAMEDA9 ?ALAMEDA10 ?ALAMEDA11 ?ALAMEDA12 ?ALAMEDA13 ?ALAMEDA14 ?ALAMEDA15)
+	local STAKE_WTHDR=($NODE_WITHDRAW_AUTHORITY "4ZJhPQAgUseCsWhKvJLTmmRRUV74fdoTpQLNfKoekbPY" "mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN" "EhYXq3ANp5nAerUpbSgd7VK2RRcxK1zNuSQ755G5Mtxx" "9eG63CdHjsfhHmobHgLtESGC8GabbmRcaSpHAZrtmhco" "4bZ6o3eUUNXhKuqjdCnCoPAoLgWiuLYixKaxoa8PpiKk" "AzZRvyyMHBm8EHEksWxq4ozFL7JxLMydCDMGhqM6BVck" "HbJTxftxnXgpePCshA8FubsRj9MW4kfPscfuUfn44fnt" "C4NeuptywfXuyWB9A7H7g5jHVDE8L6Nj2hS53tA71KPn" "6WecYymEARvjG5ZyqkrVQ6YkhPfujNzWpSPwNKXHCbV2" "W1ZQRwUfSkDKy2oefRBUWph82Vr2zg9txWMA8RQazN5" "BbyX1GwUNsfbcoWwnkZDo8sqGmwNDzs2765RpjyQ1pQb" "6iQKfEyhr3bZMotVkW6beNZz5CPAkiwvgV2CTje9pVSS" "AAbVVaokj2VSZCmSU5Uzmxi6mxrG1n6StW9mnaWwN6cv" "HXdYQ5gixrY2H6Y9gqsD8kPM2JQKSaRiohDQtLbZkRWE" "e6keeZrGmHMiQaFM3TAYvFz8HE3qtTFUSHsyqq5FEw7" "DYG1ooTxkLS5iHDkte2XK4QBrpHziDR6EEZg5VsqNpVo" "EcH12jxhrbhF6qHqRzWpZ8rZU3TjG3sX6F67zP61oDJG" "HKd8LdhjUyhp2z4kYgpJxc4pzKCCKR4yC14EFSLNENtw" "8g3YB8KxpWEAAvcjom5vSqxJAZczZBgB4pEgsssts86K" "2YcwVbKx9L25Jpaj2vfWSXD5UKugZumWjzEe6suBUJi2" "DU5XJS2Cm8ftMmi5eZZJg8nkgx1hnZ3nT5sPU3GzV1fo" "7VMTVroogF6GhVunnUWF9hX8JiXqPHiZoG3VKAe64Ckt" "GunPZHAJc5DH8qARPz8x6UXAsoR3NDadFYs3bxtMZsvg" "7hbKGnBZEFF3Bwd9HFetDkLDHXycjvCATFUnj1nEzV85" "7dPqBYywCgLmjuHmexrEJLTCuoFpEUEf31Mjkjhz15wv" "5LJ93G4SQh9GiewTQJNAu6X9sQ1VVyrpCAgbQsRSgn22" "21uFTR9S5LptdR2tBxVeG1KAsKXB7tESqQVT8KRU7Vnj" "F5U6ac2vLzv3pYsxPVPYhhvxZY7u2WJMQEk81E3keMhX")
+	
+	for j in ${!STAKE_WTHDR[@]}; do
+		if [[ "${KEY_TO_CHECK}" == "${STAKE_WTHDR[$j]}" ]]; then
+			RETURN_INFO+=${STAKE_NAMES[$j]}
+		fi
+	done
+	
+	if [[ "$RETURN_INFO" == "" ]]; then
+		RETURN_INFO="\t"
+	fi
+	
+	echo $RETURN_INFO
 }
 
 
@@ -523,6 +547,7 @@ DEFAULT_CLUSTER='-ul'
 THIS_SOLANA_ADRESS=${1:-$DEFAULT_SOLANA_ADRESS}
 SOLANA_CLUSTER=' '${2:-$DEFAULT_CLUSTER}' '
 FLAG_ONLY_IMPORTANT=${3:-"false"}
+STAKE_SHOW_TYPE=${4:-"false"}
 
 #SOLANA_CLUSTER=`getRandomRPC ${SOLANA_CLUSTER}`
 
@@ -723,29 +748,29 @@ function This_Node_3 () {
 function Node_Stake_4 () {
 
 	if [[ "${CLUSTER_NAME}" == "(Mainnet)" ]]; then
-		SOLANA_CLUSTER_local=' --url https://rpc.ankr.com/solana ' #' -um ' #' --url https://mainnet.rpcpool.com/ '
+		SOLANA_CLUSTER_local=' -um '
 	elif [[ "${CLUSTER_NAME}" == "(TESTNET)" ]]; then
 		SOLANA_CLUSTER_local=' -ut '
 	else
 		SOLANA_CLUSTER_local=' -ul '
 	fi
 
-	SOLANA_STAKES_THIS_NODE=`solana ${SOLANA_CLUSTER_local} stakes ${YOUR_VOTE_ACCOUNT}`
+	SOLANA_STAKES_THIS_NODE=`solana $SOLANA_CLUSTER_local stakes ${YOUR_VOTE_ACCOUNT}`
 
-	TOTAL_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | awk '{n += $1}; END{print n}' | bc`
+	TOTAL_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | awk '{n += $1}; END{print 0+n+0}' | bc`
 	TOTAL_STAKE_COUNT=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | grep '' -c`
 
-	ACTIVATING_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep 'Activating Stake: ' | sed 's/Activating Stake: //g' | sed 's/ SOL//g' | awk '{n += $1}; END{print n}' | bc`
+	ACTIVATING_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep 'Activating Stake: ' | sed 's/Activating Stake: //g' | sed 's/ SOL//g' | awk '{n += $1}; END{print 0+n+0}' | bc`
 	ACTIVATING_STAKE_COUNT=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep 'Activating Stake: ' | sed 's/Activating Stake: //g' | sed 's/ SOL//g' | grep '' -c`
 	
-	DEACTIVATING_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B1 -i 'deactivates' | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | awk '{n += $1}; END{print n}' | bc`
+	DEACTIVATING_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B1 -i 'deactivates' | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | awk '{n += $1}; END{print 0+n+0}' | bc`
 	DEACTIVATING_STAKE_COUNT=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B1 -i 'deactivates' | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | grep '' -c`
 
 	NO_MOVING_STAKE=`echo "${TOTAL_ACTIVE_STAKE:-0} ${DEACTIVATING_STAKE:-0}" | awk '{print $1 - $2}' | bc`
 
 	TOTAL_ACTIVE_STAKE_COUNT=`echo "${TOTAL_STAKE_COUNT:-0} ${ACTIVATING_STAKE_COUNT:-0}" | awk '{print $1 - $2}'`
 
-	BOT_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "mvines|mpa4abUk" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | awk '{n += $1}; END{print n}' | bc`
+	BOT_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "mvines|mpa4abUk" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | awk '{n += $1}; END{print 0+n+0}' | bc`
 	BOT_ACTIVE_STAKE_CLR=`echo -e "${BOT_ACTIVE_STAKE:-0}" | awk '{if(NR=0) print 0; else print'} | awk '{ if ($1 >= 0.9) print gr$1" SOL"nc; else print rd$1" SOL"nc; fi }' gr=$GREEN rd=$RED nc=$NOCOLOR`
 	BOT_ACTIVE_STAKE_COUNT=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "mvines|mpa4abUk" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | grep '' -c`
 	
@@ -754,7 +779,7 @@ function Node_Stake_4 () {
 	else
 		MINIMUM_SECRET_STAKE=0
 	fi
-	SECRET_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "EhYXq3ANp5nAerUpbSgd7VK2RRcxK1zNuSQ755G5Mtxx" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | sed 's/ //g' | awk '{n += $1}; END{print n}' | bc`
+	SECRET_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "EhYXq3ANp5nAerUpbSgd7VK2RRcxK1zNuSQ755G5Mtxx" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | sed 's/ //g' | awk '{n += $1}; END{print 0+n+0}' | bc`
 	SECRET_ACTIVE_STAKE_CLR=`echo -e "${SECRET_ACTIVE_STAKE:-0}" | awk '{if(NR=0) print 0; else print'} | awk '{ if (($1 > 0)) print gr$1" SOL"nc; else print rd$1" SOL"nc; fi }' gr=$GREEN rd=$RED nc=$NOCOLOR`
 	SECRET_ACTIVE_STAKE_COUNT=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "EhYXq3ANp5nAerUpbSgd7VK2RRcxK1zNuSQ755G5Mtxx" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | grep '' -c`
 	SECRET_ACTIVE_TEXT=`echo -e "| Un-known Fund(${SECRET_ACTIVE_STAKE_COUNT:-0}) ${SECRET_ACTIVE_STAKE_CLR} "`
@@ -768,7 +793,7 @@ function Node_Stake_4 () {
 	STAKE_POOLS_NAMES=(MARINADE SOCEAN JPOOL EVERSOL BLAZESTAKE LIDO DAOPOOL)
 	STAKE_POOLS_WTHDR=("9eG63CdHjsfhHmobHgLtESGC8GabbmRcaSpHAZrtmhco" "AzZRvyyMHBm8EHEksWxq4ozFL7JxLMydCDMGhqM6BVck" "HbJTxftxnXgpePCshA8FubsRj9MW4kfPscfuUfn44fnt" "C4NeuptywfXuyWB9A7H7g5jHVDE8L6Nj2hS53tA71KPn" "6WecYymEARvjG5ZyqkrVQ6YkhPfujNzWpSPwNKXHCbV2" "W1ZQRwUfSkDKy2oefRBUWph82Vr2zg9txWMA8RQazN5" "BbyX1GwUNsfbcoWwnkZDo8sqGmwNDzs2765RpjyQ1pQb")
 	for i in ${!STAKE_POOLS_WTHDR[@]}; do
-	  	POOL_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "${STAKE_POOLS_WTHDR[$i]}" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | sed 's/ //g' | awk '{n += $1}; END{print n}' | bc`
+	  	POOL_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "${STAKE_POOLS_WTHDR[$i]}" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | sed 's/ //g' | awk '{n += $1}; END{print 0+n+0}' | bc`
 		POOL_ACTIVE_STAKE_CLR=`echo -e "${POOL_ACTIVE_STAKE:-0}" | awk '{ if (($1 > 0)) print gr$1" SOL"nc; else print rd$1" SOL"nc; fi }' gr=$GREEN rd=$RED nc=$NOCOLOR`
 		POOL_ACTIVE_STAKE_COUNT=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 -E "${STAKE_POOLS_WTHDR[$i]}" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | grep '' -c`
 		POOL_ACTIVE_TEXT_ADD=`echo -e "| ${STAKE_POOLS_NAMES[$i]}(${POOL_ACTIVE_STAKE_COUNT:-0}) ${POOL_ACTIVE_STAKE_CLR} "`
@@ -786,7 +811,7 @@ function Node_Stake_4 () {
 	
 	POOL_ACTIVE_TEXT=`echo -e ${POOL_ACTIVE_TEXT} | sed 's/| |/|/g'`
 
-	SELF_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 'Withdraw Authority: '${NODE_WITHDRAW_AUTHORITY} | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | bc | awk '{n += $1}; END{print n}'`
+	SELF_ACTIVE_STAKE=`echo -e "${SOLANA_STAKES_THIS_NODE}" | grep -B7 'Withdraw Authority: '${NODE_WITHDRAW_AUTHORITY} | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | bc | awk '{n += $1}; END{print 0+n+0}'`
 	if [[ "${CLUSTER_NAME}" == "(Mainnet)" ]]; then
 		MINIMUM_SELF_STAKE=100
 	else
@@ -813,6 +838,40 @@ function Node_Stake_4 () {
 	echo -e "Stake Moving: no-moving ${NO_MOVING_STAKE:-0} SOL | activating  ${ACTIVATING_STAKE:-0} SOL | deactivating ${DEACTIVATING_STAKE:-0} SOL"
 	
 }
+
+
+function Node_Stake_AllStakers_4 () {
+	ALL_MY_STAKES=`solana ${SOLANA_CLUSTER} stakes ${YOUR_VOTE_ACCOUNT}`
+	while [[ $? != 0 ]]; do
+		ALL_MY_STAKES=`solana ${SOLANA_CLUSTER} stakes ${YOUR_VOTE_ACCOUNT}`
+	done
+
+	ALL_STAKERS_WITHDRAWERS=`echo "$ALL_MY_STAKES" | grep -E "Withdraw" | sort | uniq | awk -F 'Withdraw Authority: ' '{print $2}'`
+
+	#echo -e "—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————"
+
+	echo -e "${UNDERLINE}${DARKGRAY}All Stakers of Node: \t\t\t\tCount\t${DARKGRAY}${UNDERLINE}Info\t\t${DARKGRAY}${UNDERLINE}Active Stake\t${DARKGRAY}${UNDERLINE}Deactivating\t${DARKGRAY}${UNDERLINE}Activating${NOCOLOR}"
+
+	for i in $ALL_STAKERS_WITHDRAWERS; do
+		echo -e $i "\t"`echo "$ALL_MY_STAKES" | grep -B7 -E $i | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | wc -l`"\t${NOCOLOR}"`check_key $i`"\t${NOCOLOR}"`echo "$ALL_MY_STAKES" | grep -B7 -E $i | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | bc | awk '{n+=0+$1+0}; END{print 0+n+0}' | sed -r 's/^(.{7}).+$/\1/'`"\t\t${RED}"`echo "$ALL_MY_STAKES" | grep -B7 -E $i | grep -B1 -i 'deactivates' | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | bc | awk '{n-=0+$1+0}; END{print 0+n+0}' | sed -r 's/^(.{7}).+$/\1/'`"\t\t${GREEN}"`echo "$ALL_MY_STAKES" | grep -B7 -E $i | grep 'Activating Stake' | sed 's/Activating Stake: //g' | sed 's/ SOL//g' | bc | awk '{n+=0+$1+0}; END{print 0+n+0}' | sed -r 's/^(.{7}).+$/\1/'`"${NOCOLOR}";
+	done
+
+	TOTAL_ACTIVE_STAKE=`echo -e "${ALL_MY_STAKES}" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | bc | awk '{n += $1}; END{print 0+n+0}' | bc`
+	TOTAL_STAKE_COUNT=`echo -e "${ALL_MY_STAKES}" | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | bc | wc -l`
+
+	ACTIVATING_STAKE=`echo -e "${ALL_MY_STAKES}" | grep 'Activating Stake: ' | sed 's/Activating Stake: //g' | sed 's/ SOL//g' | bc | awk '{n += $1}; END{print 0+n+0}' | bc | sed -r 's/^(.{7}).+$/\1/'`
+	ACTIVATING_STAKE_COUNT=`echo -e "${ALL_MY_STAKES}" | grep 'Activating Stake: ' | sed 's/Activating Stake: //g' | sed 's/ SOL//g' | bc | wc -l`
+
+	DEACTIVATING_STAKE=`echo -e "${ALL_MY_STAKES}" | grep -B1 -i 'deactivates' | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | bc | awk '{n -= $1}; END{print 0+n+0}' | bc | sed -r 's/^(.{7}).+$/\1/'`
+	DEACTIVATING_STAKE_COUNT=`echo -e "${ALL_MY_STAKES}" | grep -B1 -i 'deactivates' | grep 'Active Stake' | sed 's/Active Stake: //g' | sed 's/ SOL//g' | bc | wc -l`
+
+	TOTAL_ACTIVE_STAKE_COUNT=`echo "${TOTAL_STAKE_COUNT:-0} ${ACTIVATING_STAKE_COUNT:-0}" | awk '{print $1 - $2}' | bc`
+
+	#echo -e "—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————"
+	echo -e "${UNDERLINE}${NOCOLOR}TOTAL:\t\t\t\t\t\t${TOTAL_ACTIVE_STAKE_COUNT}\t${LIGHTPURPLE}${UNDERLINE}\t\t${CYAN}${UNDERLINE}${TOTAL_ACTIVE_STAKE:-0}\t\t${RED}${UNDERLINE}${DEACTIVATING_STAKE:-0}\t\t${GREEN}${UNDERLINE}${ACTIVATING_STAKE:-0}${NOCOLOR}"
+
+}
+
 
 function SFDP_5 () {
 
@@ -1059,7 +1118,7 @@ function Last_Rewards_8 () {
 
 	LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 5 ${YOUR_VOTE_ACCOUNT} 2>&1)
 	
-	LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -A10 'Reward Slot' | sed 's/Reward Slot/Reward_Slot/g' | awk '{print $1"\t"$3" "$4""$5"\t"$6}'`
+	LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -A10 'Reward Slot' | sed 's/Reward Slot/Reward_Slot/g' | awk '{print $1"\t"$3}'`
 
 	#echo -ne '\n'
 	echo -e "${CYAN}"
@@ -1097,7 +1156,11 @@ function Only_Important ()
 			  echo "${LIGHTPURPLE}"
 			fi
 		fi`
-	SFDP_STATUS_STRING=`echo -e " : ${COLOR_SFDP_STATUS}${SFDP_STATUS}${NOCOLOR}"`
+	if [[ "${SFDP_STATUS}" == "null" ]];
+	then
+		SFDP_STATUS="Not SFDP Node"
+	fi
+	SFDP_STATUS_STRING=`echo -e ": ${COLOR_SFDP_STATUS}${SFDP_STATUS}${NOCOLOR}"`
 	
 	THIS_SOLANA_VALIDATOR_INFO=`solana ${SOLANA_CLUSTER} validator-info get | awk '$0 ~ sadddddr {do_print=1} do_print==1 {print} NF==0 {do_print=0}' sadddddr=$THIS_SOLANA_ADRESS`
 	
@@ -1105,7 +1168,17 @@ function Only_Important ()
 	
 	NODE_NAME=`echo -e "${THIS_SOLANA_VALIDATOR_INFO}" | grep 'Name: ' | sed 's/Name//g' | tr -s ' '`
 	
-	echo -e "${BLUE}This Node${NODE_NAME} ${CLUSTER_NAME} ${NOCOLOR}${SFDP_STATUS_STRING}"
+	NODE_COMMISSION=`echo -e "${THIS_VALIDATOR_JSON}" | jq -r '.commission'`
+	if (( $(bc<<<"scale=0;${NODE_COMMISSION:-100} <= 10.0") )); then
+		NODE_COMMISSION="${GREEN}${NODE_COMMISSION}%${NOCOLOR}"
+	else
+		if [[ "${CLUSTER_NAME}" != "(Mainnet)" ]]; then
+			NODE_COMMISSION="${GREEN}${NODE_COMMISSION}%${NOCOLOR}"
+		else
+			NODE_COMMISSION="${RED}${NODE_COMMISSION}%${NOCOLOR}"
+		fi
+	fi
+	echo -e "${BLUE}This Node${NODE_NAME} ${CLUSTER_NAME} ${NOCOLOR}${SFDP_STATUS_STRING} | ${NODE_COMMISSION}"
 	
 	IS_DELINKED=`echo -e "${SOLANA_VALIDATORS}" | grep ⚠️ | if (grep ${THIS_SOLANA_ADRESS} -c)>0; then echo -e "WARNING: ${RED}THIS NODE IS DELINKED\n\rconsider to check catchup, network connection and/or messages from your datacenter${NOCOLOR}"; else >/dev/null; fi`
 	
@@ -1326,11 +1399,44 @@ OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now 5`
 	fi
 	
 	if [[ "${CLUSTER_NAME}" == "(Mainnet)" ]]; then
+		
 		LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 ${YOUR_VOTE_ACCOUNT} 2>&1)
-		LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -m1 -A1 "Reward Slot" | grep -v "Reward" | sed -n -e 1p | awk '{print "Epoch "$1" - "$6}'`
+		while [[ $? != 0 ]]; do
+			LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 ${YOUR_VOTE_ACCOUNT} 2>&1)
+		done
+		
+		LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -m1 -A1 "Reward Slot" | grep -v "Reward" | sed -n -e 1p | awk '{print "Epoch "$1" - "$3}'`
 
 		echo -e "Last Reward: ${LAST_REWARDS:-${LIGHTPURPLE}Cannot see rewards now ${NOCOLOR}}"
 	fi
+	
+	
+	if [[ ${GRAFANA_HOST_NAME} != "null" ]]; then
+		echo -e `Graphana_hardware_info 102`" | "`Graphana_hardware_info 108`" | "`Graphana_hardware_info 118`" | "`Graphana_hardware_info 111`
+	fi
+	
+	
+	CONCENTRATION=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.data_center_stake_percent' | awk '{printf("%.2f\n",$1)}'`
+	
+	MAX_CONCENTRATION=`
+		if [[ "${CLUSTER_NAME}" == "(Mainnet)" ]]; then
+			echo "10.00"
+		else
+			echo "25.00"
+		fi`
+	DC_COLOR=`
+		if (( $(bc<<<"scale=2;${CONCENTRATION} < ${MAX_CONCENTRATION}") )); then
+		  echo "${GREEN}"
+		else
+		  echo "${YELLOW}"
+		fi`
+	
+	CURRENT_DC=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.epoch_data_center.asn'`'-'`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.epoch_data_center.location'`' | '`echo "${DC_COLOR}${CONCENTRATION}"`'%'`echo "${NOCOLOR}"`' concentration'
+	
+	if [[ "$(echo "${KYC_API_VERCEL_2}" | jq -r '.stats.epoch_data_center.asn')" != "null" ]] ; then
+		echo -e "Datacenter: ${CURRENT_DC}"
+	fi
+	
 	
 	CURRENT_STAKE_STATE=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.state'`
 	CURRENT_STAKE_REASON=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.state_reason'`
@@ -1353,28 +1459,12 @@ OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now 5`
 		echo -e "Last Bot Stake Action: In epoch ${LAST_EPOCH} ${CURRENT_STAKE_ACTION}${NOCOLOR}"
 	fi
 	
-	Node_Stake_4 | grep -A2 "Stake Total: Active"
-	
-	CONCENTRATION=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.data_center_stake_percent' | awk '{printf("%.2f\n",$1)}'`
-	
-	MAX_CONCENTRATION=`
-		if [[ "${CLUSTER_NAME}" == "(Mainnet)" ]]; then
-			echo "10.00"
-		else
-			echo "25.00"
-		fi`
-	DC_COLOR=`
-		if (( $(bc<<<"scale=2;${CONCENTRATION} < ${MAX_CONCENTRATION}") )); then
-		  echo "${GREEN}"
-		else
-		  echo "${YELLOW}"
-		fi`
-	
-	CURRENT_DC=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.epoch_data_center.asn'`'-'`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.epoch_data_center.location'`' | '`echo "${DC_COLOR}${CONCENTRATION}"`'%'`echo "${NOCOLOR}"`' concentration'
-	
-	if [[ "$(echo "${KYC_API_VERCEL_2}" | jq -r '.stats.epoch_data_center.asn')" != "null" ]] ; then
-		echo -e "Datacenter: ${CURRENT_DC}"
+	if [[ "${STAKE_SHOW_TYPE}" == "false" ]]; then
+		Node_Stake_4 | grep -A2 "Stake Total: Active"
+	else
+		Node_Stake_AllStakers_4
 	fi
+	
 }
 
 
@@ -1388,7 +1478,17 @@ echo -e "${GREEN}Solana Price: ${NOCOLOR}"`solana_price`
 	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 OPTIMISTIC_ARR[5]=`Optimistic_Slot_Now`
 	This_Node_3
-	Node_Stake_4
+	
+	if [[ "${STAKE_SHOW_TYPE}" == "false" ]]; then
+		Node_Stake_4
+	else
+		echo -e "${CYAN}"
+		echo -e "Current Stake ${NOCOLOR}"
+		CURRENT_STAKE_ACTION=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.state_action'`
+		echo -e "${LIGHTPURPLE}Last Bot Stake Action:${NOCOLOR} In epoch ${LAST_EPOCH} ${CURRENT_STAKE_ACTION}${NOCOLOR}"
+		Node_Stake_AllStakers_4
+	fi
+	
 OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now`
 	SFDP_5
 OPTIMISTIC_ARR[7]=`Optimistic_Slot_Now`
@@ -1417,9 +1517,7 @@ OPTIMISTIC_ARR[8]=`Optimistic_Slot_Now`
 	#SOLANA_CLUSTER=$(rotateKnownRPC "${SOLANA_CLUSTER}")
 	
 	Only_Important
-	if [[ ${GRAFANA_HOST_NAME} != "null" ]]; then
-		echo -e `Graphana_hardware_info 102`" | "`Graphana_hardware_info 108`" | "`Graphana_hardware_info 118`" | "`Graphana_hardware_info 111`
-	fi
+
 	
 
 fi
