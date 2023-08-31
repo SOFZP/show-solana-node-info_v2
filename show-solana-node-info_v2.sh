@@ -1116,14 +1116,24 @@ function Skiprate_7 () {
 
 function Last_Rewards_8 () {
 
-	LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 5 ${YOUR_VOTE_ACCOUNT} 2>&1)
+	LAST_REWARDS_RAW_JSON=$(solana -um vote-account --with-rewards --num-rewards-epochs 5 --output json ${YOUR_VOTE_ACCOUNT} 2>&1 | jq -r '.epochRewards[]')
 	
-	LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -A10 'Reward Slot' | sed 's/Reward Slot/Reward_Slot/g' | awk '{print $1"\t"$3}'`
+	LAST_REWARDS_RAW_JSON_EPOCHS=(`echo -e "${LAST_REWARDS_RAW_JSON}" | jq -r '.epoch'`)
+	LAST_REWARDS_RAW_JSON_AMOUNT=(`echo -e "${LAST_REWARDS_RAW_JSON}" | jq -r '.amount' | awk '{print ($1/(1000000000))}' | bc`)
+	
+	for((t=0;t<${#LAST_REWARDS_RAW_JSON_EPOCHS[@]};t++)); do
+		LAST_REWARDS_JSON+=`echo -ne "Epoch ${LAST_REWARDS_RAW_JSON_EPOCHS[t]} - ${LAST_REWARDS_RAW_JSON_AMOUNT[t]} "`
+		LAST_REWARDS_JSON+="\n"
+	done
+
+	#LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 5 ${YOUR_VOTE_ACCOUNT} 2>&1)
+	#LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -A10 'Reward Slot' | sed 's/Reward Slot/Reward_Slot/g' | awk '{print $1"\t"$3}'`
 
 	#echo -ne '\n'
 	echo -e "${CYAN}"
 	echo -e "Last Rewards ${NOCOLOR}"
-	echo -e "${LAST_REWARDS:-${LIGHTPURPLE}No rewards yet ${NOCOLOR}}"
+	#echo -e "${LAST_REWARDS:-${LIGHTPURPLE}No rewards yet ${NOCOLOR}}"
+	echo -e "${LAST_REWARDS_JSON:-${LIGHTPURPLE}No rewards yet ${NOCOLOR}}"
 	
 	#_work_done=1
 }
@@ -1400,14 +1410,31 @@ OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now 5`
 	
 	if [[ "${CLUSTER_NAME}" == "(Mainnet)" ]]; then
 		
-		LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 ${YOUR_VOTE_ACCOUNT} 2>&1)
+		#LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 ${YOUR_VOTE_ACCOUNT} 2>&1)
+		#while [[ $? != 0 ]]; do
+		#	LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 ${YOUR_VOTE_ACCOUNT} 2>&1)
+		#done
+		#
+		#LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -m1 -A1 "Reward Slot" | grep -v "Reward" | sed -n -e 1p | awk '{print "Epoch "$1" - "$3}'`
+		#
+		#echo -e "Last Reward: ${LAST_REWARDS:-${LIGHTPURPLE}Cannot see rewards now ${NOCOLOR}}"
+		
+		
+		LAST_REWARDS_RAW_JSON=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 --output json ${YOUR_VOTE_ACCOUNT} 2>&1 | jq -r '.epochRewards[]')
 		while [[ $? != 0 ]]; do
-			LAST_REWARDS_RAW=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 ${YOUR_VOTE_ACCOUNT} 2>&1)
+			LAST_REWARDS_RAW_JSON=$(solana -um vote-account --with-rewards --num-rewards-epochs 1 --output json ${YOUR_VOTE_ACCOUNT} 2>&1 | jq -r '.epochRewards[]')
+		done
+	
+		LAST_REWARDS_RAW_JSON_EPOCHS=(`echo -e "${LAST_REWARDS_RAW_JSON}" | jq -r '.epoch'`)
+		LAST_REWARDS_RAW_JSON_AMOUNT=(`echo -e "${LAST_REWARDS_RAW_JSON}" | jq -r '.amount' | awk '{print ($1/(1000000000))}' | bc`)
+		
+		for((t=0;t<${#LAST_REWARDS_RAW_JSON_EPOCHS[@]};t++)); do
+			LAST_REWARDS_JSON+=`echo -ne "Epoch ${LAST_REWARDS_RAW_JSON_EPOCHS[t]} - ${LAST_REWARDS_RAW_JSON_AMOUNT[t]} "`
+			#LAST_REWARDS_JSON+="\n"
 		done
 		
-		LAST_REWARDS=`echo -e "${LAST_REWARDS_RAW}" | grep -m1 -A1 "Reward Slot" | grep -v "Reward" | sed -n -e 1p | awk '{print "Epoch "$1" - "$3}'`
-
-		echo -e "Last Reward: ${LAST_REWARDS:-${LIGHTPURPLE}Cannot see rewards now ${NOCOLOR}}"
+		echo -e "Last Reward: ${LAST_REWARDS_JSON:-${LIGHTPURPLE}Cannot see rewards now ${NOCOLOR}}"
+		
 	fi
 	
 	
