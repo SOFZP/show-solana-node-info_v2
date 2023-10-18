@@ -212,6 +212,10 @@ function see_shedule() {
 
 function Optimistic_Slot_Now() {
 
+	echo "null"
+	exit 1
+	
+
 	sleep ${1:-3}
 
 	local NOW_S=`date +"%s"`
@@ -310,6 +314,7 @@ function Graphana_hardware_info() {
 	#Disk Space
 	
 	#102 disk
+	#139 swap
 	#104 cpu
 	#108 ram
 	#118 descriptors
@@ -360,15 +365,15 @@ function Graphana_hardware_info() {
   --data-raw '{"queries":[{"datasource":{"uid":"PBFA97CFB590B2093","type":"prometheus"},"editorMode":"code","expr":"disk_used_percent{host =~ \"'$GRAFANA_HOST_NAME'$\", path=\"/\"}","legendFormat":"__auto","range":true,"refId":"A","queryType":"timeSeriesQuery","exemplar":false,"requestId":"71A","utcOffsetSec":0,"interval":"","datasourceId":1,"intervalMs":15000,"maxDataPoints":100}],"range":{"from":"now-5m","to":"now","raw":{"from":"now-5m","to":"now"}},"from":"now-5m","to":"now"}' \
   --compressed 2> /dev/null`
   
-  elif [[ ${GRAPHANA_CODE} == "73" ]]; then
-	local ALL_RESULT=`curl -g -s 'https://metrics.stakeconomy.com/api/ds/query' \
+  elif [[ ${GRAPHANA_CODE} == "139" ]]; then  
+    local ALL_RESULT=`curl -g -s 'https://metrics.stakeconomy.com/api/ds/query' \
   -H 'authority: metrics.stakeconomy.com' \
   -H 'accept: application/json, text/plain, */*' \
   -H 'accept-language: en-US,en;q=0.9,uk;q=0.8,ru;q=0.7' \
   -H 'content-type: application/json' \
   -H 'origin: https://metrics.stakeconomy.com' \
   -H 'referer: '${REFERER}'' \
-  -H 'sec-ch-ua: "Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"' \
+  -H 'sec-ch-ua: "Chromium";v="106", "Google Chrome";v="106", "Not=A?Brand";v="99"' \
   -H 'sec-ch-ua-mobile: ?0' \
   -H 'sec-ch-ua-platform: "Windows"' \
   -H 'sec-fetch-dest: empty' \
@@ -376,7 +381,45 @@ function Graphana_hardware_info() {
   -H 'sec-fetch-site: same-origin' \
   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36' \
   -H 'x-grafana-org-id: 1' \
-  --data-raw '{"queries":[{"datasource":{"uid":"PBFA97CFB590B2093","type":"prometheus"},"editorMode":"code","expr":"100-cpu_usage_idle{host =~ \"^'$GRAFANA_HOST_NAME'$\",cpu = \"cpu-total\"}","legendFormat":"__auto","range":true,"refId":"A","queryType":"timeSeriesQuery","exemplar":false,"requestId":"73A","utcOffsetSec":0,"interval":"","datasourceId":1,"intervalMs":15000,"maxDataPoints":100}],"range":{"from":"now-5m","to":"now","raw":{"from":"now-5m","to":"now"}},"from":"now-5m","to":"now"}' \
+  --data-raw '{"queries":[{"alias":"$tag_host: $col","col":"used","datasource":{"uid":"PBFA97CFB590B2093","type":"prometheus"},"dsType":"prometheus","expr":"median(swap_used{host =~ \"'$GRAFANA_HOST_NAME'$\"}) by (host)","function":"mean","groupBy":" by (host)","interval":"","legendFormat":"{{host}}: used","measurement":"swap","policy":"default","query":"select mean(used) as used from \"swap\" WHERE host =~ /$server$/ AND $timeFilter GROUP BY time($interval), host ORDER BY asc","rawQuery":true,"refId":"B","resultFormat":"time_series","select":[[{"params":["used"],"type":"mean"}]],"tags":"{host =~ \"$server$\"}","queryType":"timeSeriesQuery","exemplar":false,"requestId":"139B","utcOffsetSec":0,"datasourceId":1,"intervalMs":15000,"maxDataPoints":100},{"alias":"$tag_host: $col","col":"total","datasource":{"uid":"PBFA97CFB590B2093","type":"prometheus"},"dsType":"prometheus","expr":"median(swap_total{host =~ \"'$GRAFANA_HOST_NAME'$\"}) by (host)","function":"mean","groupBy":" by (host)","interval":"","legendFormat":"{{host}}: total","measurement":"swap","policy":"default","query":"select mean(total) as total from \"swap\" WHERE host =~ /$server$/ AND $timeFilter GROUP BY time($interval), host ORDER BY asc","rawQuery":true,"refId":"C","resultFormat":"time_series","select":[[{"params":["total"],"type":"mean"}]],"tags":"{host =~ \"$server$\"}","queryType":"timeSeriesQuery","exemplar":false,"requestId":"139C","utcOffsetSec":0,"datasourceId":1,"intervalMs":15000,"maxDataPoints":100}],"range":{"from":"now-5m","to":"now","raw":{"from":"now-5m","to":"now"}},"from":"now-5m","to":"now"}' \
+  --compressed 2> /dev/null`
+  
+  elif [[ ${GRAPHANA_CODE} == "73" ]]; then
+	local ALL_RESULT=`curl 'https://metrics.stakeconomy.com/api/ds/query' \
+  -H 'authority: metrics.stakeconomy.com' \
+  -H 'accept: application/json, text/plain, */*' \
+  -H 'accept-language: en-US,en;q=0.9,uk;q=0.8,ru;q=0.7' \
+  -H 'content-type: application/json' \
+  -H 'origin: https://metrics.stakeconomy.com' \
+  -H 'referer: '${REFERER}'' \
+  -H 'sec-ch-ua: "Chromium";v="106", "Google Chrome";v="106", "Not=A?Brand";v="99"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36' \
+  -H 'x-grafana-org-id: 1' \
+  --data-raw '{"queries":[{"datasource":{"uid":"PBFA97CFB590B2093","type":"prometheus"},"editorMode":"code","expr":"100-cpu_usage_idle{host =~ \"^GwuVgxewTRizBWM622HQeY5qBJ4dcvyQyZ7JnsXnRLRQ$\",cpu = \"cpu-total\"}","legendFormat":"__auto","range":true,"refId":"A","queryType":"timeSeriesQuery","exemplar":false,"requestId":"73A","utcOffsetSec":0,"interval":"","datasourceId":1,"intervalMs":20000,"maxDataPoints":100}],"range":{"from":"now-5m","to":"now","raw":{"from":"now-5m","to":"now"}},"from":"now-5m","to":"now"}' \
+  --compressed 2> /dev/null`
+  
+  elif [[ ${GRAPHANA_CODE} == "67" ]]; then
+	local ALL_RESULT=`curl 'https://metrics.stakeconomy.com/api/ds/query' \
+  -H 'authority: metrics.stakeconomy.com' \
+  -H 'accept: application/json, text/plain, */*' \
+  -H 'accept-language: en-US,en;q=0.9,uk;q=0.8,ru;q=0.7' \
+  -H 'content-type: application/json' \
+  -H 'origin: https://metrics.stakeconomy.com' \
+  -H 'referer: '${REFERER}'' \
+  -H 'sec-ch-ua: "Chromium";v="106", "Google Chrome";v="106", "Not=A?Brand";v="99"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36' \
+  -H 'x-grafana-org-id: 1' \
+  --data-raw '{"queries":[{"datasource":{"uid":"PBFA97CFB590B2093","type":"prometheus"},"editorMode":"code","expr":"cpu_usage_iowait{host =~ \"^'$GRAFANA_HOST_NAME'$\",cpu = \"cpu-total\"}","legendFormat":"__auto","range":true,"refId":"A","queryType":"timeSeriesQuery","exemplar":false,"requestId":"67A","utcOffsetSec":0,"interval":"","datasourceId":1,"intervalMs":20000,"maxDataPoints":100}],"range":{"from":"now-5m","to":"now","raw":{"from":"now-5m","to":"now"}},"from":"now-5m","to":"now"}' \
   --compressed 2> /dev/null`
   
   elif [[ ${GRAPHANA_CODE} == "108" ]]; then
@@ -466,13 +509,43 @@ function Graphana_hardware_info() {
 		
 		GRAPHANA_DISK_DATA=`echo $ALL_RESULT | jq -r @json 2> /dev/null | jq -r '.results.A.frames[0].data.values[1][-1]'  2> /dev/null | awk '{printf("%.2f\n",$1)}' 2> /dev/null | awk '{ if (($1 <= 80.00)) print gr$1"%"nc; else if (($1 <= 87.00)) print ye$1"%"nc; else print rd$1"%"nc; fi }' gr=$GREEN ye=$YELLOW rd=$RED nc=$NOCOLOR`
 		
-		echo -e "Load disk space: "${GRAPHANA_DISK_DATA}
+		echo -e "Disk: "${GRAPHANA_DISK_DATA}
+		
+	elif [[ ${GRAPHANA_CODE} == "139" ]]; then
+		
+		GRAPHANA_SWAP_DATA_TOTAL=`echo $ALL_RESULT | jq -r @json 2> /dev/null | jq -r '.results.C.frames[0].data.values[1][0]' | awk '{print ($1/(1024*1024*1024))}' 2> /dev/null | awk '{printf("%.1f\n",$1)}'  2> /dev/null`
+		GRAPHANA_SWAP_DATA_USED=`echo $ALL_RESULT | jq -r @json 2> /dev/null | jq -r '.results.B.frames[0].data.values[1][0]' | awk '{print ($1/(1024*1024*1024))}' 2> /dev/null | awk '{printf("%.1f\n",$1)}'  2> /dev/null`
+		
+		if (( $(bc<<<"scale=2;${GRAPHANA_SWAP_DATA_TOTAL:-0} <= 0.5") ));
+			then
+				GRAPHANA_SWAP_DATA_TOTAL="1"
+				GRAPHANA_SWAP_DATA_TOTAL_SHOW="0"
+			else
+				GRAPHANA_SWAP_DATA_TOTAL_SHOW=GRAPHANA_SWAP_DATA_TOTAL
+		fi
+		
+		GRAPHANA_SWAP_COLOR=`
+		if (( $(bc<<<"scale=2;100*${GRAPHANA_SWAP_DATA_USED:-0}/${GRAPHANA_SWAP_DATA_TOTAL:-1} >= 95") )); then
+			echo "${YELLOW}"
+		elif (( $(bc<<<"scale=2;100*${GRAPHANA_SWAP_DATA_USED:-0}/${GRAPHANA_SWAP_DATA_TOTAL:-1} >= 85") )); then
+			echo "${RED}"
+		else
+			echo "${GREEN}"
+		fi`
+		
+		echo -e "Swap: "${GRAPHANA_SWAP_COLOR}${GRAPHANA_SWAP_DATA_USED:-N/A}"Gb/"${GRAPHANA_SWAP_DATA_TOTAL_SHOW:-N/A}"Gb"${NOCOLOR}
 		
 	elif [[ ${GRAPHANA_CODE} == "73" ]]; then
 		
-		GRAPHANA_DATA_1_NOW=`echo $ALL_RESULT | jq -r @json 2> /dev/null | jq -r '.results.A.frames[0].data.values[1][-1]'  2> /dev/null | awk '{printf("%.2f\n",$1)}' 2> /dev/null | awk '{ if (($1 <= 80.00)) print gr$1"%"nc; else if (($1 <= 90.00)) print ye$1"%"nc; else print rd$1"%"nc; fi }' gr=$GREEN ye=$YELLOW rd=$RED nc=$NOCOLOR`
+		GRAPHANA_CPU_DATA=`echo $ALL_RESULT | jq -r @json 2> /dev/null | jq -r '.results.A.frames[0].data.values[1][-1]'  2> /dev/null | awk '{printf("%.2f\n",$1)}' 2> /dev/null | awk '{ if (($1 <= 80.00)) print gr$1"%"nc; else if (($1 <= 90.00)) print ye$1"%"nc; else print rd$1"%"nc; fi }' gr=$GREEN ye=$YELLOW rd=$RED nc=$NOCOLOR`
 		
-		echo -e "CPU load: "${GRAPHANA_CPU_DATA}
+		echo -e "CPU: "${GRAPHANA_CPU_DATA}
+		
+	elif [[ ${GRAPHANA_CODE} == "67" ]]; then
+		
+		GRAPHANA_IOWAIT=`echo $ALL_RESULT | jq -r @json 2> /dev/null | jq -r '.results.A.frames[0].data.values[1][-1]'  2> /dev/null | awk '{printf("%.2f\n",$1)}' 2> /dev/null | awk '{ if (($1 <= 8.00)) print gr$1"%"nc; else if (($1 <= 20.00)) print ye$1"%"nc; else print rd$1"%"nc; fi }' gr=$GREEN ye=$YELLOW rd=$RED nc=$NOCOLOR`
+		
+		echo -e "IOWait: "${GRAPHANA_IOWAIT}
 		
 	elif [[ ${GRAPHANA_CODE} == "108" ]]; then
 		
@@ -485,7 +558,7 @@ function Graphana_hardware_info() {
 			echo "${GREEN}"
 		fi`
 		
-		echo -e "RAM load: "${GRAPHANA_RAM_COLOR}${GRAPHANA_DATA_2_NOW:-N/A}"Gb/"${GRAPHANA_DATA_1_NOW:-N/A}"Gb"${NOCOLOR}
+		echo -e "RAM: "${GRAPHANA_RAM_COLOR}${GRAPHANA_DATA_2_NOW:-N/A}"Gb/"${GRAPHANA_DATA_1_NOW:-N/A}"Gb"${NOCOLOR}
 		
 	elif [[ ${GRAPHANA_CODE} == "118" ]]; then
 		
@@ -500,7 +573,7 @@ function Graphana_hardware_info() {
 			echo "${GREEN}"
 		fi`
 		
-		echo -e "Open File Descriptors: "${GRAPHANA_OFD_COLOR}${GRAPHANA_DATA_1_NOW:-N/A}${NOCOLOR}
+		echo -e "Descriptors: "${GRAPHANA_OFD_COLOR}${GRAPHANA_DATA_1_NOW:-N/A}${NOCOLOR}
 		
 		
 	elif [[ ${GRAPHANA_CODE} == "111" ]]; then
@@ -527,7 +600,7 @@ function Graphana_hardware_info() {
 			echo "${GREEN}"
 		fi`
 		
-		echo -e "Network Usage: IN "${GRAPHANA_N1_COLOR}${GRAPHANA_DATA_1_NOW:-N/A}"Mb/s"${NOCOLOR}" OUT "${GRAPHANA_N2_COLOR}${GRAPHANA_DATA_2_NOW:-N/A}"Mb/s"${NOCOLOR}
+		echo -e "Network: IN "${GRAPHANA_N1_COLOR}${GRAPHANA_DATA_1_NOW:-N/A}"Mb/s"${NOCOLOR}" OUT "${GRAPHANA_N2_COLOR}${GRAPHANA_DATA_2_NOW:-N/A}"Mb/s"${NOCOLOR}
 		
 		
 		
@@ -615,6 +688,9 @@ do
 	#echo $LAST_EPOCH
 	#echo $KYC_API_VERCEL_2
 done
+
+KYC_API_VERCEL_3=`curl -s 'https://kyc-api.vercel.app/api/validators/'${THIS_SOLANA_ADRESS}`
+
 
 
 REFERER000=`echo "https://metrics.stakeconomy.com/d/f2b2HcaGz/solana-community-validator-dashboard?var-pubkey="``echo "${THIS_SOLANA_ADRESS}&orgId=1&refresh=1m"`
@@ -885,13 +961,20 @@ function SFDP_5 () {
 	fi
 	
 	if [[ SFDP_FULL_STATUS="" ]]; then
-		SFDP_FULL_STATUS=`echo "Testnet Key:" $(echo "${KYC_API_VERCEL}" | jq -r '.data[0].testnet_pk')
-		echo "Mainnet Key:" $(echo "${KYC_API_VERCEL}" | jq -r '.data[0].mainnet_beta_pk')`
+		SFDP_FULL_STATUS=`echo "Testnet Key:" $(echo "${KYC_API_VERCEL}" | jq -r '.data[0].testnetPubkey')
+		echo "Mainnet Key:" $(echo "${KYC_API_VERCEL}" | jq -r '.data[0].mainnetBetaPubkey')
+		echo "Participant Pubkey:" $(echo "${KYC_API_VERCEL_3}" | jq -r '.participantPubkey')`
 	fi
+	
+	KYC_STATUS=`echo "${KYC_API_VERCEL_3}" | jq -r '.kycStatus'`
+	KYC_REQ_BY=`echo "${KYC_API_VERCEL_3}" | jq -r '.kycRequiredBy'`
+	
+	TDS22ENROLLED=`echo "${KYC_API_VERCEL_3}" | jq -r '.tds22Enrolled'`
+	TDS22SIGNUPDATE=`echo "${KYC_API_VERCEL_3}" | jq -r '.tds22SignupDate'`
 	
 	TDS_GROUP=`echo "${KYC_API_VERCEL}" | jq -r '.data[0].tds_onboarding_group'`
 	
-	ONBOARDING_NUMBER=`echo "${KYC_API_VERCEL}" | jq -r '.data[0].onboarding_number'`
+	ONBOARDING_NUMBER=`echo "${KYC_API_VERCEL}" | jq -r '.data[0].onboardingNumber'`
 	ONBOARDING_WEEK=`echo -e "$ONBOARDING_NUMBER" | awk '{print ($1/25.00)}' | awk '{printf("%.1f\n",$1)}'`
 	
 	CURRENT_STAKE_STATE=`echo "${KYC_API_VERCEL_2}" | jq -r '.stats.state'`
@@ -953,11 +1036,35 @@ function SFDP_5 () {
 	SFDP_STATUS_STRING=`echo -e "State: ${COLOR_SFDP_STATUS}${SFDP_STATUS}${NOCOLOR}"`
 	SFDP=`echo -e "${SFDP_FULL_STATUS}" | grep -v "State: "`
 	
+	KYC_REQ_STRING=`
+		if [[ "${KYC_STATUS}" == "RE_KYC_REQUIRED" ]];
+		then
+		  echo " untill" $(date -d "${KYC_REQ_BY}" +"%F %T") ${SERVER_TIME_ZONE:-''}
+		fi`
+	COLOR_KYC_STATUS=`
+		if [[ "${KYC_STATUS}" == "RE_KYC_REQUIRED" ]];
+		then
+		  echo "${RED}REQUIRED"
+		else
+			if [[ "${KYC_STATUS}" == "KYC_VALID" ]];
+			then
+			  echo "${GREEN}VALID"
+			else
+			  echo "${LIGHTPURPLE}${KYC_STATUS}"
+			fi
+		fi`
+	KYC_STATUS_STRING=`echo -e "KYC Status: ${COLOR_KYC_STATUS}${NOCOLOR}${KYC_REQ_STRING}"`
 	
+	TDS22SIGNUPDATE_STRING=`
+		if [[ "${TDS22SIGNUPDATE}" != "null" ]];
+		then
+		  echo $(date -d "${TDS22SIGNUPDATE}" +"%F %T") ${SERVER_TIME_ZONE:-''}
+		fi`
 
 	#echo -ne '\n'
 	echo -e "${CYAN}"
 	echo -e "Foundation Delegation Program ${NOCOLOR}"
+	echo -e "${KYC_STATUS_STRING}"
 	echo -e "${SFDP_STATUS_STRING}"
 	if [[ "${TDS_GROUP}" != "null" ]] ; then
 		echo -e "TDS Group: ${TDS_GROUP}"
@@ -971,6 +1078,13 @@ function SFDP_5 () {
 		echo -e "Current Testnet Performance: ${COLOR_TESTNET_PERFORMANCE}${TESTNET_PERFORMANCE}/10 ${NOCOLOR}"
 	fi
 	echo -e "Last Epoch State: ${COLOR_STAKE_STATE}${CURRENT_STAKE_STATE}: ${CURRENT_STAKE_REASON}${NOCOLOR}"
+	if [[ "${TDS22ENROLLED}" == "true" ]] ;
+	then
+		echo -e "TDS22 registration: ${GREEN}TRUE${NOCOLOR} from ${TDS22SIGNUPDATE_STRING}"
+	else
+		echo -e "TDS22 registration: ${RED}${TDS22ENROLLED}${NOCOLOR}"
+	fi
+	
 	
 	#echo -e "Metrics-Last-Epoch-${LAST_EPOCH}: ${METRICS_LAST_EPOCH}"
 	
@@ -1188,7 +1302,35 @@ function Only_Important ()
 			NODE_COMMISSION="${RED}${NODE_COMMISSION}%${NOCOLOR}"
 		fi
 	fi
-	echo -e "${BLUE}This Node${NODE_NAME} ${CLUSTER_NAME} ${NOCOLOR}${SFDP_STATUS_STRING} | ${NODE_COMMISSION}"
+	
+	KYC_STATUS=`echo "${KYC_API_VERCEL_3}" | jq -r '.kycStatus'`
+	#KYC_REQ_BY=`echo "${KYC_API_VERCEL_3}" | jq -r '.kycRequiredBy'`
+	
+	TDS22ENROLLED=`echo "${KYC_API_VERCEL_3}" | jq -r '.tds22Enrolled'`
+	#TDS22SIGNUPDATE=`echo "${KYC_API_VERCEL_3}" | jq -r '.tds22SignupDate'`
+	
+	COLOR_KYC_STATUS=`
+		if [[ "${KYC_STATUS}" == "RE_KYC_REQUIRED" ]];
+		then
+		  echo "${RED}RE-KYC REQUIRED"
+		else
+			if [[ "${KYC_STATUS}" == "KYC_VALID" ]];
+			then
+			  echo "${GREEN}KYC VALID"
+			else
+			  echo "${LIGHTPURPLE}${KYC_STATUS}"
+			fi
+		fi`
+	KYC_STATUS_STRING=`echo -e "${COLOR_KYC_STATUS}${NOCOLOR}"`
+	
+	if [[ "${TDS22ENROLLED}" == "true" ]];
+		then
+			TDS22ENROLLED=`echo -e "${GREEN}TDS22 Registered${NOCOLOR}"`
+		else
+			TDS22ENROLLED=`echo -e "${NOCOLOR}TDS22 no registered${NOCOLOR}"`
+	fi
+	
+	echo -e "${BLUE}This Node${NODE_NAME} ${CLUSTER_NAME} ${NOCOLOR}${SFDP_STATUS_STRING} | ${NODE_COMMISSION} | ${TDS22ENROLLED} | ${KYC_STATUS_STRING}"
 	
 	IS_DELINKED=`echo -e "${SOLANA_VALIDATORS}" | grep ⚠️ | if (grep ${THIS_SOLANA_ADRESS} -c)>0; then echo -e "WARNING: ${RED}THIS NODE IS DELINKED\n\rconsider to check catchup, network connection and/or messages from your datacenter${NOCOLOR}"; else >/dev/null; fi`
 	
@@ -1226,7 +1368,7 @@ OPTIMISTIC_ARR[3]=`Optimistic_Slot_Now 5`
 	
 	
 	
-	ONBOARDING_NUMBER=`echo "${KYC_API_VERCEL}" | jq -r '.data[0].onboarding_number'`
+	ONBOARDING_NUMBER=`echo "${KYC_API_VERCEL}" | jq -r '.data[0].onboardingNumber'`
 	ONBOARDING_WEEK=`echo -e "$ONBOARDING_NUMBER" | awk '{print ($1/25.00)}' | awk '{printf("%.1f\n",$1)}'`
 	
 	if [[ "${ONBOARDING_NUMBER}" != "null" ]] ; then
@@ -1439,7 +1581,7 @@ OPTIMISTIC_ARR[6]=`Optimistic_Slot_Now 5`
 	
 	
 	if [[ ${GRAFANA_HOST_NAME} != "null" ]]; then
-		echo -e `Graphana_hardware_info 102`" | "`Graphana_hardware_info 108`" | "`Graphana_hardware_info 118`" | "`Graphana_hardware_info 111`
+		echo -e `Graphana_hardware_info 102`" | "`Graphana_hardware_info 139`" | "`Graphana_hardware_info 73`" | "`Graphana_hardware_info 67`" | "`Graphana_hardware_info 108`" | "`Graphana_hardware_info 118`" | "`Graphana_hardware_info 111`
 	fi
 	
 	
@@ -1527,7 +1669,9 @@ OPTIMISTIC_ARR[8]=`Optimistic_Slot_Now`
 		echo -e "${CYAN}"
 		echo -e "Hardware Info: ${NOCOLOR}"
 		echo -e `Graphana_hardware_info 102`
-		#echo -e `Graphana_hardware_info 73`
+		echo -e `Graphana_hardware_info 139`
+		echo -e `Graphana_hardware_info 73`
+		echo -e `Graphana_hardware_info 67`
 		echo -e `Graphana_hardware_info 108`
 		echo -e `Graphana_hardware_info 118`
 		echo -e `Graphana_hardware_info 111`
