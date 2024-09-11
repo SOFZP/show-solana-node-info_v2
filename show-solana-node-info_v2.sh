@@ -674,7 +674,7 @@ iterator=0
 DONE_STOP=0
 while [ $DONE_STOP == 0 ]
 do
-	KYC_API_VERCEL_2=`curl -s 'https://kyc-api.vercel.app/api/validators/details?pk='${THIS_SOLANA_ADRESS}'&epoch='${LAST_EPOCH}`
+	KYC_API_VERCEL_2=`curl -s 'https://api.solana.org/api/validators/details?pk='${THIS_SOLANA_ADRESS}'&epoch='${LAST_EPOCH}`
 	if [[ "$(echo "${KYC_API_VERCEL_2}" | jq -r '.message')" != "null" ]]; then
 		LAST_EPOCH=$(echo "$LAST_EPOCH-1" | bc)
 	else
@@ -689,7 +689,7 @@ do
 	#echo $KYC_API_VERCEL_2
 done
 
-KYC_API_VERCEL_3=`curl -s 'https://kyc-api.vercel.app/api/validators/'${THIS_SOLANA_ADRESS}`
+KYC_API_VERCEL_3=`curl -s 'https://api.solana.org/api/validators/'${THIS_SOLANA_ADRESS}`
 
 
 
@@ -951,7 +951,7 @@ function Node_Stake_AllStakers_4 () {
 
 function SFDP_5 () {
 
-	KYC_API_VERCEL=`curl -s 'https://kyc-api.vercel.app/api/validators/list?offset=0&limit=15&order_by=name&order=asc&search_term='${THIS_SOLANA_ADRESS}`
+	KYC_API_VERCEL=`curl -s 'https://api.solana.org/api/validators/list?offset=0&limit=15&order_by=name&order=asc&search_term='${THIS_SOLANA_ADRESS}`
 	
 	SFDP_FULL_STATUS=$(solana-foundation-delegation-program status ${THIS_SOLANA_ADRESS}  > /dev/null 2>&1)
 	SFDP_STATUS=`echo -e "${SFDP_FULL_STATUS}" | grep 'State: ' | sed 's/State: //g'`
@@ -1266,7 +1266,7 @@ function Only_Important ()
 	
 	echo -e "${CYAN}$EPOCH_NUMBER | $END_OF_EPOCH$SERVER_TIME_ZONE| $EPOCH_REMAINS ${NOCOLOR}"
 
-	KYC_API_VERCEL=`curl -s 'https://kyc-api.vercel.app/api/validators/list?offset=0&limit=15&order_by=name&order=asc&search_term='${THIS_SOLANA_ADRESS}`
+	KYC_API_VERCEL=`curl -s 'https://api.solana.org/api/validators/list?offset=0&limit=15&order_by=name&order=asc&search_term='${THIS_SOLANA_ADRESS}`
 	SFDP_STATUS=`echo "${KYC_API_VERCEL}" | jq -r '.data[0].state'`
 	COLOR_SFDP_STATUS=`
 		if [[ "${SFDP_STATUS}" == "Rejected" ]];
