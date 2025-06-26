@@ -4,7 +4,8 @@
   
  
 ### This is complex CLI script for solana nodes monitoring
- 
+
+## UPD: This script is not supported in 2025. We are working on new versions, more modular approach, error tolerance, more all-in-one information.  
  
 ## TL;DR
 Script uses **on-chain solana data, API of solana.org, API of Grafana**
